@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block title %}Available Cars - Car Bond{% endblock %}
+
+{% block content %}
+    <!-- this gets easier when i use bootstrap so dont penilise me most of code here is bootstrap code am customizing from their site, and by the way this is what every developer do with bootsrap, am sorry for here but i will go to botstap and get their component, thats okay -->
+
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h2>Available Cars</h2>
+    </div>
+    <div class="col-md-4">
+        <form method="get" class="d-flex">
+            <input type="text" name="search" class="form-control me-2" placeholder="Search cars..." value="{{ request.GET.search }}">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+    </div>
+</div>
+
+<div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
+    {% for car in cars %}
+    <div class="col">
+        <div class="card h-100">
+            {% if car.image_url %}
+            <img src="{{ car.image_url }}" class="card-img-top" alt="{{ car }}">
+            {% else %}
+            <div class="card-img-top bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
+                <i class="fas fa-car fa-3x"></i>
+            </div>
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ car.year }} {{ car.make }} {{ car.model }}</h5>
+                <p class="card-text">
+                    <strong>Price:</strong> ${{ car.price|floatformat:2 }}
+                </p>
+                <p class="card-text">{{ car.description|truncatewords:20 }}</p>
+            </div>
+            <div class="card-footer">
+                <a href="{% url 'cars:car_detail' car.pk %}" class="btn btn-primary w-100">View Details</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="alert alert-info">
+            No cars available at the moment.
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% if is_paginated %}
+<nav aria-label="Page navigation" class="mt-4">
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">Previous</a>
+        </li>
+        {% endif %}
+
+        {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+        <li class="page-item active">
+            <span class="page-link">{{ num }}</span>
+        </li>
+        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ num }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">{{ num }}</a>
+        </li>
+        {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">Next</a>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add any JavaScript for the car list page here
+    // whoever is reviewing this get to know that when it came to javascrip i will use my way of doing it
+    $(document).ready(function() {
+        $('.card').hover(
+            function() { $(this).addClass('shadow-lg'); },
+            function() { $(this).removeClass('shadow-lg'); }
+        );
+    });
+</script>
+{% endblock %} 

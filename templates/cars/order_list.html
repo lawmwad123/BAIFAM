@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block title %}My Orders - Car Bond{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">My Orders</h2>
+
+<div class="row">
+    <div class="col-12">
+        {% if orders %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Order #</th>
+                        <th>Car</th>
+                        <th>Date</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td>{{ order.id }}</td>
+                        <td>
+                            <a href="{% url 'cars:car_detail' order.car.id %}" class="text-decoration-none">
+                                {{ order.car.year }} {{ order.car.make }} {{ order.car.model }}
+                            </a>
+                        </td>
+                        <td>{{ order.order_date|date:"M d, Y" }}</td>
+                        <td>${{ order.total_amount|floatformat:2 }}</td>
+                        <td>
+                            {% if order.status == 'pending' %}
+                            <span class="badge bg-warning text-dark">Pending</span>
+                            {% elif order.status == 'approved' %}
+                            <span class="badge bg-success">Approved</span>
+                            {% elif order.status == 'rejected' %}
+                            <span class="badge bg-danger">Rejected</span>
+                            {% elif order.status == 'completed' %}
+                            <span class="badge bg-info">Completed</span>
+                            {% else %}
+                            <span class="badge bg-secondary">{{ order.status|title }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'cars:order_detail' order.id %}" class="btn btn-sm btn-outline-primary">
+                                View Details
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if is_paginated %}
+        <nav aria-label="Order pagination" class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                </li>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <li class="page-item active">
+                    <span class="page-link">{{ num }}</span>
+                </li>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                </li>
+                {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+
+        {% else %}
+        <div class="alert alert-info">
+            <h4 class="alert-heading">No Orders Yet!</h4>
+            <p>You haven't placed any orders yet. Start browsing our collection of cars to find your perfect match!</p>
+            <hr>
+            <p class="mb-0">
+                <a href="{% url 'cars:car_list' %}" class="btn btn-primary">Browse Cars</a>
+            </p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Add hover effect to table rows
+    $('tbody tr').hover(
+        function() { $(this).addClass('table-active'); },
+        function() { $(this).removeClass('table-active'); }
+    );
+});
+</script>
+{% endblock %} 

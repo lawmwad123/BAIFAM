@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ car.year }} {{ car.make }} {{ car.model }} - Car Bond{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div id="carImages" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                {% if car.images.exists %}
+                    {% for image in car.images.all %}
+                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                        <img src="{{ image.image_url }}" class="d-block w-100" alt="{{ car }}">
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="carousel-item active">
+                        {% if car.image_url %}
+                        <img src="{{ car.image_url }}" class="d-block w-100" alt="{{ car }}">
+                        {% else %}
+                        <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 400px;">
+                            <i class="fas fa-car fa-5x"></i>
+                        </div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+            {% if car.images.count > 1 %}
+            <button class="carousel-control-prev" type="button" data-bs-target="#carImages" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carImages" data-bs-slide="next">
+                <span class="carousel-control-next-icon"></span>
+            </button>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <h1 class="mb-4">{{ car.year }} {{ car.make }} {{ car.model }}</h1>
+        
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Specifications</h5>
+                <table class="table table-borderless">
+                    <tr>
+                        <th>Make:</th>
+                        <td>{{ car.make }}</td>
+                    </tr>
+                    <tr>
+                        <th>Model:</th>
+                        <td>{{ car.model }}</td>
+                    </tr>
+                    <tr>
+                        <th>Year:</th>
+                        <td>{{ car.year }}</td>
+                    </tr>
+                    <tr>
+                        <th>Price:</th>
+                        <td>${{ car.price|floatformat:2 }}</td>
+                    </tr>
+                    <tr>
+                        <th>Status:</th>
+                        <td>
+                            {% if car.available %}
+                            <span class="badge bg-success">Available</span>
+                            {% else %}
+                            <span class="badge bg-danger">Not Available</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Description</h5>
+                <p class="card-text">{{ car.description|linebreaks }}</p>
+            </div>
+        </div>
+
+        {% if car.available %}
+        <div class="d-grid gap-2">
+            {% if user.is_authenticated %}
+            <a href="{% url 'cars:place_order' car.id %}" class="btn btn-primary btn-lg">
+                Place Order
+            </a>
+            {% else %}
+            <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-primary btn-lg">
+                Login to Place Order
+            </a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="mt-5">
+    <h3 class="mb-4">Similar Cars</h3>
+    <div class="row row-cols-1 row-cols-md-4 g-4">
+        {% for similar_car in car.similar_cars|slice:":4" %}
+        <div class="col">
+            <div class="card h-100">
+                {% if similar_car.image_url %}
+                <img src="{{ similar_car.image_url }}" class="card-img-top" alt="{{ similar_car }}">
+                {% else %}
+                <div class="card-img-top bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 150px;">
+                    <i class="fas fa-car fa-2x"></i>
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ similar_car.year }} {{ similar_car.make }} {{ similar_car.model }}</h5>
+                    <p class="card-text">${{ similar_car.price|floatformat:2 }}</p>
+                </div>
+                <div class="card-footer">
+                    <a href="{% url 'cars:car_detail' similar_car.pk %}" class="btn btn-outline-primary w-100">View Details</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+
+    // Add to favorites functionality (if implemented)
+    $('.favorite-btn').click(function(e) {
+        e.preventDefault();
+        // Add AJAX call here
+    });
+});
+</script>
+{% endblock %} 

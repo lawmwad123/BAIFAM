@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Page Not Found - Car Bond{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center text-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="error-page py-5">
+            <h1 class="display-1 text-muted">404</h1>
+            <div class="mb-4">
+                <i class="fas fa-car-crash text-danger" style="font-size: 5rem;"></i>
+            </div>
+            <h2 class="mb-4">Oops! Page Not Found</h2>
+            <p class="text-muted mb-4">
+                The page you're looking for doesn't exist or has been moved.
+                Let's get you back on the right track.
+            </p>
+            <div class="d-grid gap-2 col-md-6 mx-auto">
+                <a href="{% url 'cars:car_list' %}" class="btn btn-primary">
+                    <i class="fas fa-home me-2"></i>Return to Home
+                </a>
+                <button onclick="history.back()" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Go Back
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.error-page {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fa-car-crash {
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+}
+</style>
+{% endblock %} 

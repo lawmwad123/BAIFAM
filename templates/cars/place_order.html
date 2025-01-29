@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+
+{% block title %}Place Order - {{ car.year }} {{ car.make }} {{ car.model }} - Car Bond{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col">
+            <h2>Place Order</h2>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'cars:car_list' %}">Cars</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'cars:car_detail' car.id %}">{{ car.year }} {{ car.make }} {{ car.model }}</a></li>
+                    <li class="breadcrumb-item active">Place Order</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Order Details</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" id="orderForm">
+                        {% csrf_token %}
+                        
+                        <div class="mb-4">
+                            <h6>Car Information</h6>
+                            <table class="table table-sm">
+                                <tr>
+                                    <th style="width: 150px;">Make:</th>
+                                    <td>{{ car.make }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Model:</th>
+                                    <td>{{ car.model }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Year:</th>
+                                    <td>{{ car.year }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Price:</th>
+                                    <td>${{ car.price|floatformat:2 }}</td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div class="mb-4">
+                            <h6>Your Information</h6>
+                            <table class="table table-sm">
+                                <tr>
+                                    <th style="width: 150px;">Name:</th>
+                                    <td>{{ user.get_full_name|default:user.username }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Email:</th>
+                                    <td>{{ user.email }}</td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="notes" class="form-label">Additional Notes (optional)</label>
+                            <textarea class="form-control" id="notes" name="notes" rows="3" placeholder="Any special requests or notes for your order?"></textarea>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <h6 class="alert-heading">Please Note:</h6>
+                            <ul class="mb-0">
+                                <li>Your order will be reviewed by our team. (BAIFAM)</li>
+                                <li>We will contact you to confirm the order details.</li>
+                                <li>Payment details will be provided after order approval.</li>
+                            </ul>
+                        </div>
+
+                        <div class="form-check mb-4">
+                            <input class="form-check-input" type="checkbox" id="terms" required>
+                            <label class="form-check-label" for="terms">
+                                I agree to the terms and conditions of the purchase
+                            </label>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">Place Order</button>
+                            <a href="{% url 'cars:car_detail' car.id %}" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Order Summary</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-3">
+                        <span>Car Price:</span>
+                        <strong>${{ car.price|floatformat:2 }}</strong>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span>Total Amount:</span>
+                        <strong class="text-primary">${{ car.price|floatformat:2 }}</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Need Help?</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">If you have any questions about the ordering process, please don't hesitate to contact us:</p>
+                    <ul class="list-unstyled mb-0">
+                        <li><i class="fas fa-phone me-2"></i> (256) 758951822</li>
+                        <li><i class="fas fa-envelope me-2"></i> lawmwad@gmail.com</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    $('#orderForm').on('submit', function(e) {
+        if (!$('#terms').is(':checked')) {
+            e.preventDefault();
+            alert('Please agree to the terms and conditions to proceed.');
+        }
+    });
+});
+</script>
+{% endblock %} 
