@@ -42,7 +42,6 @@ A web application for managing car listings and purchases, built with Django and
 1. Clone the repository:
    ```bash
    git clone git@github.com:lawmwad123/BAIFAM.git
-   cd car-bond-management
    ```
 
 2. Create and activate a virtual environment:
