@@ -1,0 +1,76 @@
+# Django specific
+*.log
+*.pot
+*.pyc
+__pycache__/
+local_settings.py
+
+# If your build process includes running collectstatic, then you probably don't need or want to include staticfiles/
+# in your Git repository. Update and uncomment the following line accordingly.
+# staticfiles/
+
+# If your build process includes running collectstatic, then you probably don't need or want to include static/
+# in your Git repository. Update and uncomment the following line accordingly.
+# static/
+
+# Ignore the following:
+# 1. SQLite database files
+*.sqlite3
+
+# 2. Python egg files
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+var/
+sdist/
+develop-eggs/
+.installed.cfg
+lib/
+lib64/
+__pycache__/
+
+# 3. Coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# 4. Translations
+*.mo
+
+# 5. Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# 6. Sphinx documentation
+docs/_build/
+
+# 7. PyBuilder
+target/
+
+# 8. Jupyter Notebook
+.ipynb_checkpoints
+
+# 9. Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# 10. mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
